@@ -1,28 +1,26 @@
-import React from "react";
-import { useState } from "react";
-import bg from "../assets/imagens/bg.png"
-const ContactForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        message: '',
-    })
-    const handleChange = (e) =>{
-        setFormData({
-            ...formData,[e.target.name]: e.target.value
-        });
-    }
-    const handleSubmit = (e) =>{
-        e.preventDefault(); 
+import React, { useState } from "react";
+import bg from "../assets/imagens/bg.png";
+import axios from "axios";
 
-        console.log(`Mensagem enviada ${formData.name} , ${formData.email}`)
-        console.log(`${formData.message}`)
-
-        alert('Mensagem enviada com sucesso')
-
-        setFormData({name:'', email:'', message:''}) /* limpa os campos nome email e mensagem */
-   
-    }
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password
+      })
+      const userData = response.data;
+      localStorage.setItem("user", JSON.stringify(userData))
+      alert("usuario logado com sucesso!!")
+      navigate("/")
+    } catch (error) {
+      if (error.response) {
+        alert("Erro ao logar usuário email ou senha incorretos")
+      } else {
+        alert("erro ao conectar ao servidor")
+      }
+    };
+  
     return(
         <>
         <div
@@ -30,7 +28,7 @@ const ContactForm = () => {
             style={{backgroundImage: `url(${bg})`}}
         >
             <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg">
-            <h2 className="texr-x1 sm:text-2xl font-semibold mb-4 sm:md-6 text-center text-gray-800">Entre em contato</h2>
+            <h2 className="text-x1 sm:text-2xl font-semibold mb-4 sm:md-6 text-center text-gray-800">Entre em contato</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div> {/* campo para entrada de nome */}
                     <label htmlFor="name" className="block text-gray-700 font-medium mb-1">Nome</label>
